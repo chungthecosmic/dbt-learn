@@ -1,0 +1,18 @@
+sources:
+  - name: main
+    tables:
+      - name: index_contituents
+      - name: price_daily1
+      - name: price_daily2
+        description: "This is the price_daily2 table, which contains daily price data for stocks. It has the same schema as price_daily1, but with different data."
+        columns:
+          - name: stock_id
+            description: "The unique identifier for each stock."
+          - name: date
+            description: "The date of the price data."
+          - name: open
+            description: "The opening price of the stock on that date."
+          - name: close
+            description: "The closing price of the stock on that date."
+          
+          
