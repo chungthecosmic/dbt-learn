@@ -1,0 +1,18 @@
+models:
+  - name: price_daily_merged
+    descrpition: price merged data
+    columns:
+      - name: ticker
+        tests:
+          - not_null:
+              name: my_not_null_test
+              config:
+                severity: warn
+        descrpition: The date of the price data
+    config:
+      materialized: view
+      tags:
+        - price
+        - daily
+  - name: kospi200_constituents_daily
+  - name: price_of_kospi200_daily
