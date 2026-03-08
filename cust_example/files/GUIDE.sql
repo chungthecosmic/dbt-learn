@@ -1,0 +1,72 @@
+-- ============================================================
+-- 실행 가이드
+-- ============================================================
+--
+-- ■ 핵심 원칙
+--   run_date는 항상 외부에서 주입한다. default 값 없음.
+--   run_date를 넘기지 않으면 에러가 발생하며, 이는 의도된 설계다.
+--
+--
+-- ■ 일상 운영 (단일 날짜)
+--
+--   dbt run -s stg_cust_m cust_fact cust_mart \
+--       --vars '{"run_date": "20250308"}'
+--
+--   또는 의존성 기반 연쇄 실행:
+--
+--   dbt run -s stg_cust_m+ \
+--       --vars '{"run_date": "20250308"}'
+--
+--
+-- ■ 백필 (기간)
+--
+--   for dt in 20250301 20250302 20250303 20250304 20250305; do
+--     dbt run -s stg_cust_m cust_fact cust_mart \
+--         --vars "{\"run_date\": \"$dt\"}"
+--   done
+--
+--
+-- ■ 특정 레이어만 재처리
+--
+--   -- cust_mart만 재생성 (cust_fact는 이미 적재된 상태)
+--   dbt run -s cust_mart \
+--       --vars '{"run_date": "20250308"}'
+--
+--
+-- ■ 전체 재생성 (full refresh)
+--
+--   dbt run -s stg_cust_m cust_fact cust_mart \
+--       --vars '{"run_date": "20250308"}' \
+--       --full-refresh
+--
+--
+-- ■ 테스트
+--
+--   dbt test -s stg_cust_m cust_fact cust_mart
+--
+--
+-- ■ Airflow 연동 예시
+--
+--   BashOperator(
+--       task_id='dbt_daily_cust',
+--       bash_command='''
+--           dbt run -s stg_cust_m cust_fact cust_mart \
+--               --vars '{"run_date": "{{ ds_nodash }}"}'
+--       '''
+--   )
+--
+--
+-- ■ DAG 구조
+--
+--   stg_cust_m (staging)
+--       └── cust_fact (intermediate)
+--               └── cust_mart (mart)
+--
+--
+-- ■ Redshift 최적화 참고
+--
+--   - dist key: cust_id (조인 최적화)
+--   - sort key: base_dt (날짜 필터 최적화)
+--   - 위 설정은 각 모델의 config에 이미 반영됨
+--
+-- ============================================================

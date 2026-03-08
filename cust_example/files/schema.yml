@@ -1,0 +1,134 @@
+version: 2
+
+# ============================================================
+# Sources: 원천 테이블 정의
+# ============================================================
+sources:
+  - name: raw
+    description: "원천 운영계 데이터"
+    schema: raw
+    tables:
+      - name: cust_m
+        description: "고객 마스터 테이블"
+        columns:
+          - name: cust_id
+            description: "고객 ID (PK)"
+          - name: last_chng_dttm
+            description: "최종 변경 일시"
+
+      - name: cust_addr
+        description: "고객 주소 테이블"
+        columns:
+          - name: cust_id
+            description: "고객 ID"
+          - name: addr_type_cd
+            description: "주소 유형 코드 (01: 기본주소)"
+
+      - name: cust_grade
+        description: "고객 등급 테이블 (기간별 이력)"
+        columns:
+          - name: cust_id
+            description: "고객 ID"
+          - name: grade_start_dt
+            description: "등급 시작일"
+          - name: grade_end_dt
+            description: "등급 종료일"
+
+      - name: purchase_hist
+        description: "구매 이력 테이블"
+        columns:
+          - name: cust_id
+            description: "고객 ID"
+          - name: purchase_dt
+            description: "구매 일자"
+          - name: purchase_amt
+            description: "구매 금액"
+
+
+# ============================================================
+# Models: 테스트 및 문서화
+# ============================================================
+models:
+
+  # ----------------------------------------------------------
+  # Staging
+  # ----------------------------------------------------------
+  - name: stg_cust_m
+    description: >
+      고객 마스터 전일 변경분 스테이징.
+      run_date 기준 전일(D-1) last_chng_dttm에 해당하는 변경 레코드를 추출한다.
+    columns:
+      - name: cust_id
+        description: "고객 ID"
+        tests:
+          - not_null
+      - name: base_dt
+        description: "기준 일자 (run_date)"
+        tests:
+          - not_null
+
+  # ----------------------------------------------------------
+  # Intermediate (Fact)
+  # ----------------------------------------------------------
+  - name: cust_fact
+    description: >
+      고객 통합 팩트 일별 스냅샷.
+      고객 마스터 + 주소 + 등급 + 구매이력을 통합하여
+      run_date 기준 전체 고객의 스냅샷을 생성한다.
+    columns:
+      - name: cust_id
+        description: "고객 ID"
+        tests:
+          - not_null
+      - name: base_dt
+        description: "기준 일자"
+        tests:
+          - not_null
+      - name: total_purchase_amt
+        description: "누적 구매 금액"
+      - name: recent_3m_purchase_amt
+        description: "최근 3개월 구매 금액"
+    tests:
+      - unique:
+          column_name: "cust_id || '-' || base_dt"
+
+  # ----------------------------------------------------------
+  # Mart
+  # ----------------------------------------------------------
+  - name: cust_mart
+    description: >
+      고객 마트 요약 일별 스냅샷.
+      고객 가치 세그먼트, 활동 상태, 구매 추세 등
+      비즈니스 의미가 담긴 요약 지표를 제공한다.
+    columns:
+      - name: cust_id
+        description: "고객 ID"
+        tests:
+          - not_null
+      - name: base_dt
+        description: "기준 일자"
+        tests:
+          - not_null
+      - name: value_segment
+        description: "고객 가치 세그먼트"
+        tests:
+          - accepted_values:
+              values: ['VVIP', 'VIP', 'GOLD', 'SILVER', 'NORMAL']
+      - name: activity_status
+        description: "활동 상태"
+        tests:
+          - accepted_values:
+              values: ['ACTIVE', 'DORMANT', 'AT_RISK', 'CHURNED', 'NO_PURCHASE']
+      - name: purchase_trend
+        description: "구매 추세"
+        tests:
+          - accepted_values:
+              values: ['GROWING', 'STABLE', 'DECLINING', 'NEW_OR_NONE']
+      - name: age_group
+        description: "연령대"
+        tests:
+          - accepted_values:
+              values: ['10대', '20대', '30대', '40대', '50대', '60대이상', 'UNKNOWN']
+    tests:
+      - unique:
+          column_name: "cust_id || '-' || base_dt"

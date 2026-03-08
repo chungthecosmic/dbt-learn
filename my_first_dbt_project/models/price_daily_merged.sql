@@ -27,7 +27,7 @@ from (
     select *
     from _source_a
     union all
-    select *
+    select * 
     from _source_b
 ) t
 where volume != 0
