@@ -14,5 +14,13 @@ models:
       tags:
         - price
         - daily
+
   - name: kospi200_constituents_daily
+    tests:
+      - dbt_utils.unique_combination_of_columns:          
+          combination_of_columns:
+            - target_index_name
+            - ticker
+            - date_kst
+      
   - name: price_of_kospi200_daily
