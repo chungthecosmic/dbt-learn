@@ -1,0 +1,75 @@
+# =========================
+# Python Virtual Environment
+# =========================
+dbt-learn/
+venv/
+.venv/
+env/
+__pycache__/
+*.py[cod]
+*.pyo
+
+# =========================
+# dbt
+# =========================
+# Compiled artifacts & run results
+target/
+
+# Installed packages (like node_modules)
+dbt_packages/
+
+# dbt logs
+logs/
+*.log
+
+# dbt profiles (contains credentials)
+profiles/
+
+# =========================
+# Database files
+# =========================
+*.duckdb
+*.duckdb.wal
+*.db
+*.sqlite
+
+# =========================
+# Environment & Secrets
+# =========================
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+secrets.yaml
+secrets.yml
+
+# =========================
+# Airflow / Astro CLI
+# =========================
+.astro/
+airflow.db
+airflow.cfg
+webserver_config.py
+
+# =========================
+# VSCode
+# =========================
+.vscode/mcp.json
+
+# =========================
+# macOS
+# =========================
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# =========================
+# JetBrains IDEs
+# =========================
+.idea/
+
+# =========================
+# Jupyter
+# =========================
+.ipynb_checkpoints/

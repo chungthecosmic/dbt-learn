@@ -1,0 +1,8 @@
+sources:
+  - name: main
+    tables:
+      - name: index_constituents_inc
+
+      - name: price_daily1_inc
+      
+      - name: price_daily2_inc
