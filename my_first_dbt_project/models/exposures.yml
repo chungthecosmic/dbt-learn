@@ -1,0 +1,20 @@
+exposures:
+
+  - name: my quant app
+    label: 수익률이 높은 퀀트 앱
+    type: application
+    maturity: high
+    url: https://youtube.com
+    description: >
+      퀀트 앱입니다.
+
+    depends_on:
+      - ref('price_daily_merged')
+
+    owner:
+      name: Callum McData
+      email: data@jaffleshop.com
+
+
+
+## 태블로 메타스토어에서 정보를 읽어온 뒤에 직접 넣어주는 자동화 스크립트 개발하는 방식으로 자동화 하는 사례 소개

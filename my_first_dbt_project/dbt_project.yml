@@ -33,6 +33,11 @@ clean-targets:         # directories to be removed by `dbt clean`
 #   my_first_dbt_project:
 #     +schema: main
 
+vars:
+  start_dt: "2099-12-31"   # docs용 더미값
+  end_dt: "2099-12-31"
+  target_schema: "dev"
+
 
 models:
   my_first_dbt_project:

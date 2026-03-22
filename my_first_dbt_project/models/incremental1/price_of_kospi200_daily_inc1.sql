@@ -16,7 +16,7 @@ select
     , t2.low
     , t2.close
     , t2.volume
-from {{ ref("kospi200_constituents_daily") }} as t1
+from {{ ref("kospi200_constituents_daily_inc1") }} as t1
 left join {{ (ref("price_daily_merged")) }} as t2
     on t1.ticker = t2.ticker
     and t1.date_kst = t2.date_kst

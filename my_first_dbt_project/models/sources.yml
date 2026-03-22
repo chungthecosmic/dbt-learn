@@ -2,5 +2,16 @@ sources:
   - name: main
     tables:
       - name: index_constituents
+        freshness:
+          error_after:
+            count: 500
+            period: day
+        loaded_at_field: CAST(loaded_date_kst as timestamp)
+        tests:
+          - dbt_utils.recency:
+              datepart: day
+              interval: 500
+              field: CAST(loaded_date_kst as timestamp)
+
       - name: price_daily1
       - name: price_daily2

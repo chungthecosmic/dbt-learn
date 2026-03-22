@@ -4,3 +4,4 @@ dbt_packages/
 logs/
 seeds/
 seeds_incremental/
+dbt_internal_packages/
